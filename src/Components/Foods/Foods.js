@@ -7,6 +7,7 @@ import car2 from '../../images/carousel/carousel2.jpg'
 import car3 from '../../images/carousel/carousel3.jpg'
 import ShowFood from '../ShowFood/ShowFood';
 import Cart from '../Cart/Cart';
+import Paginate from '../Paginate/Paginate'
 import { addToDatabaseCart, getDatabaseCart } from '../../utilities/databaseManager';
 
 const Foods = () => {
@@ -50,6 +51,15 @@ const Foods = () => {
         setCart(newCart);
          addToDatabaseCart(food._id,count);
     }
+    const[currentPage,setCurrentPage] =useState(1); 
+    const[perPage]=useState(6); 
+
+    const indexOfLastContent=currentPage*perPage; 
+    const indexOfFirstContent=indexOfLastContent-perPage; 
+    const currentContent=foods.slice(indexOfFirstContent,indexOfLastContent);
+
+    const paginate=(number) => { setCurrentPage(number); }
+
     return (
         <div>
             <Container>
@@ -94,8 +104,11 @@ const Foods = () => {
                 <div className="mainContent">
                     <div className='row showFood'>
                         {
-                            foods.map(food => <ShowFood handleButton={handleButton} key={food._id} food={food}></ShowFood>)
+                            currentContent.map(food => <ShowFood handleButton={handleButton} key={food._id} food={food}></ShowFood>)
                         }
+                        <div style={{marginLeft:'45%'}}>
+                        <Paginate currentPage={currentPage} paginate={paginate} perPage={perPage} total={foods.length}></Paginate>
+                        </div>  
                     </div>
                     <div className='showCart'>
                         <Cart showButton={true} cart={cart}></Cart>
